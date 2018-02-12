@@ -567,4 +567,111 @@ public class TestDoubleLinkedList extends BaseTest {
             count += 2;
         }
     }
+    
+    @Test(timeout=SECOND)
+    public void testDeleteBasic() {
+        IList<String> list = this.makeBasicList();
+        
+        list.delete(0);
+        this.assertListMatches(new String[] {"b", "c"}, list);
+
+        list.delete(1);
+        this.assertListMatches(new String[] {"b"}, list);
+
+    }
+
+    @Test
+    public void testDeleteOutOfBounds() {
+        IList<Integer> list = new DoubleLinkedList<>();
+
+        try {
+            list.delete(-1);
+            fail("Expected IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException ex) {
+            // Do nothing: this is ok
+        }
+
+        try {
+            list.delete(10);
+            fail("Expected IndexOutOfBoundsException");
+        } catch (IndexOutOfBoundsException ex) {
+            // Do nothing: this is ok
+        }
+    }
+
+    @Test(timeout=15 * SECOND)
+    public void testDeleteAtEndIsEfficient() {
+        IList<Integer> list = new DoubleLinkedList<>();
+        
+        int cap = 5000000;
+        for (int i = 0; i < cap; i++) {
+            list.add(i * 2);
+        }
+        for (int i = 0; i < cap; i++) {
+            list.delete(list.size() - 1);
+        }
+        assertEquals(0, list.size());
+    }
+    
+    @Test(timeout=15 * SECOND)
+    public void testDeleteNearEndIsEfficient() {
+        IList<Integer> list = new DoubleLinkedList<>();
+        list.add(-1);
+        list.add(-2);
+
+        int cap = 5000000;
+        for (int i = 0; i < cap; i++) {
+            list.add(i * 2);
+        }
+        for (int i = 0; i < cap; i++) {
+            list.delete(list.size() - 3);
+        }
+        assertEquals(2, list.size());
+    }
+
+    @Test(timeout=15 * SECOND)
+    public void testDeleteAtFrontIsEfficient() {
+        IList<Integer> list = new DoubleLinkedList<>();
+        
+        int cap = 5000000;
+        for (int i = 0; i < cap; i++) {
+            list.add(i * 2);
+        }
+        for (int i = 0; i < cap; i++) {
+            list.delete(0);
+        }
+        assertEquals(0, list.size());
+    }
+    
+    @Test(timeout = SECOND)
+    public void testDeleteThenInsert() {
+        IList<String> list = this.makeBasicList();
+        
+        list.delete(0);
+        this.assertListMatches(new String[] {"b", "c"}, list);
+        
+        list.insert(0, "a");
+        this.assertListMatches(new String[] {"a", "b", "c"}, list);
+
+        list.delete(2);
+        this.assertListMatches(new String[] {"a", "b"}, list);
+        
+        list.insert(2, "c");
+        this.assertListMatches(new String[] {"a", "b", "c"}, list);
+        
+        list.delete(1);
+        this.assertListMatches(new String[] {"a", "c"}, list);
+
+        list.insert(1, "b");
+        this.assertListMatches(new String[] {"a", "b", "c"}, list);
+    }
+    
+    @Test(timeout = SECOND)
+    public void testDeleteReturnValue() {
+        IList<String> list = this.makeBasicList();
+        
+        assertEquals(list.delete(0), "a");
+        assertEquals(list.delete(1), "c");
+        assertEquals(list.delete(0), "b");
+    }
 }
