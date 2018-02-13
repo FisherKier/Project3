@@ -1,9 +1,6 @@
 package datastructures.concrete;
 
 import datastructures.interfaces.IPriorityQueue;
-
-//TODO test Git 
-
 import misc.exceptions.NotYetImplementedException;
 
 /**
@@ -17,11 +14,21 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     // You may NOT rename this field: we will be inspecting it within
     // our private tests.
     private T[] heap;
+    private int totalSize;
+    private int elementSize;
 
     // Feel free to add more fields and constants.
 
     public ArrayHeap() {
-        throw new NotYetImplementedException();
+        elementSize = 0;
+        totalSize = 50;
+        heap = makeArrayOfT(50);
+    }
+    
+    public ArrayHeap(int size) {
+        this.elementSize = 0;
+        totalSize = size;
+        heap = makeArrayOfT(size);
     }
 
     /**
@@ -42,21 +49,71 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
 
     @Override
     public T removeMin() {
-        throw new NotYetImplementedException();
+        T minValue = heap[0];
+        heap[0] = heap[elementSize - 1];
+        
+        percolateDown(0);
+        
+        return minValue;
+    }
+    
+    private void percolateDown(int curIndex) {
+        for(int i = 0; i < NUM_CHILDREN; i++) {
+            int childIndex = 4 * curIndex + i;
+            if(heap[childIndex].compareTo(heap[curIndex]) < 0) {
+                T temp = heap[childIndex];
+                heap[childIndex] = heap[curIndex];
+                heap[curIndex] = temp;
+                
+                percolateDown(childIndex);
+            }
+        }
     }
 
     @Override
     public T peekMin() {
-        throw new NotYetImplementedException();
+        return heap[0];
     }
 
     @Override
     public void insert(T item) {
-        throw new NotYetImplementedException();
+        if(item == null) {
+            throw new IllegalArgumentException();
+        }
+        
+        if(elementSize == totalSize) {
+            resize();
+        }
+        
+        heap[elementSize - 1] = item;
+        percolateUp(elementSize - 1);
+    }
+    
+    private void resize() {
+        T temp[] = makeArrayOfT(totalSize * 2);
+        for(int i = 0; i < totalSize - 1; i ++) {
+            temp[i] = heap[i];
+        }
+        
+        totalSize = totalSize * 2;
+        heap = temp;
+    }
+    
+    private void percolateUp(int curIndex) {
+        for(int i = 0; i < NUM_CHILDREN; i++) {
+            int parentIndex = (i-1) / 4;
+            if(heap[parentIndex].compareTo(heap[curIndex]) > 0) {
+                T temp = heap[parentIndex];
+                heap[parentIndex] = heap[curIndex];
+                heap[parentIndex] = temp;
+                
+                percolateUp(parentIndex);
+            }
+        }
     }
 
     @Override
     public int size() {
-        throw new NotYetImplementedException();
+        return elementSize;
     }
 }

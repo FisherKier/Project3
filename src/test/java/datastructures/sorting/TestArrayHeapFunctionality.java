@@ -4,6 +4,8 @@ import static org.junit.Assert.assertTrue;
 
 import misc.BaseTest;
 import datastructures.concrete.ArrayHeap;
+import datastructures.concrete.DoubleLinkedList;
+import datastructures.interfaces.IList;
 import datastructures.interfaces.IPriorityQueue;
 import org.junit.Test;
 
@@ -14,7 +16,19 @@ public class TestArrayHeapFunctionality extends BaseTest {
     protected <T extends Comparable<T>> IPriorityQueue<T> makeInstance() {
         return new ArrayHeap<>();
     }
+    
+    protected IPriorityQueue<String> makeBasicHeap() {
+        IPriorityQueue<String> heap = new ArrayHeap<>();
 
+        heap.add("a");
+        heap.add("b");
+        heap.add("c");
+
+        return heap;
+    }
+
+    
+    
     @Test(timeout=SECOND)
     public void testBasicSize() {
         IPriorityQueue<Integer> heap = this.makeInstance();
@@ -22,4 +36,6 @@ public class TestArrayHeapFunctionality extends BaseTest {
         assertEquals(1, heap.size());
         assertTrue(!heap.isEmpty());
     }
+    
+    
 }
