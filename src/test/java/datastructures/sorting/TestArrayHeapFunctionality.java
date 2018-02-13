@@ -1,6 +1,9 @@
 package datastructures.sorting;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.NoSuchElementException;
 
 import misc.BaseTest;
 import datastructures.concrete.ArrayHeap;
@@ -22,4 +25,143 @@ public class TestArrayHeapFunctionality extends BaseTest {
         assertEquals(1, heap.size());
         assertTrue(!heap.isEmpty());
     }
+    
+    
+    
+    @Test(timeout=SECOND)
+    public void testRemoveFromEmpty() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        assertTrue(heap.isEmpty());
+    try {
+        heap.removeMin();
+        fail("Expected NoSuchElementException");
+    } catch (NoSuchElementException ex) {
+        // Do nothing: this is ok
+    }
+    }
+    
+    @Test(timeout=SECOND)
+    public void testPeakFromEmpty() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        assertTrue(heap.isEmpty());
+    try {
+        heap.peekMin();
+        fail("Expected NoSuchElementException");
+    } catch (NoSuchElementException ex) {
+        // Do nothing: this is ok
+    }
+    }
+    
+    @Test(timeout=SECOND)
+    public void testRemoveMin() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        heap.insert(5);
+        assertEquals(1, heap.size());
+        assertEquals(5, heap.removeMin());
+        assertEquals(0, heap.size());
+        assertTrue(heap.isEmpty());
+    }
+    
+    @Test(timeout=SECOND)
+    public void testPeekMin() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        heap.insert(5);
+        assertEquals(1, heap.size());
+        assertEquals(5, heap.peekMin());
+        assertEquals(1, heap.size());
+        assertTrue(!heap.isEmpty());
+    }
+    
+    
+    @Test(timeout=SECOND)
+    public void testAddandRemoveMany() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        for (int i = 0; i < 10; i++) {
+        heap.insert(i);
+        assertEquals(1, heap.size());
+        assertEquals(i, heap.removeMin());
+        assertTrue(heap.isEmpty());
+        }
+    }
+    
+    @Test(timeout=SECOND)
+    public void testSortForwardInsert() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        for (int i = 0; i < 20; i++) {
+        heap.insert(i);
+        }
+        assertEquals(20, heap.size());
+        for (int i = 0; i < 20; i++) {
+        assertEquals(i, heap.removeMin());
+        }
+        assertTrue(heap.isEmpty());
+    }
+    
+    @Test(timeout=SECOND)
+    public void testSortBackWardsInsert() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        for (int i = 19; i >= 0; i--) {
+        heap.insert(i);
+        }
+        assertEquals(20, heap.size());
+        for (int i = 0; i < 20; i++) {
+        assertEquals(i, heap.removeMin());
+        }
+        assertTrue(heap.isEmpty());
+    }
+    
+    
+    @Test(timeout=SECOND)
+    public void testResizeForwardInsert() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        for (int i = 0; i < 100; i++) {
+        heap.insert(i);
+        }
+        assertEquals(100, heap.size());
+        for (int i = 0; i < 100; i++) {
+        assertEquals(i, heap.removeMin());
+        }
+        assertTrue(heap.isEmpty());
+    }
+    
+    @Test(timeout=SECOND)
+    public void testResizeBackWardsInsert() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        for (int i = 99; i >= 0; i--) {
+        heap.insert(i);
+        }
+        assertEquals(100, heap.size());
+        for (int i = 0; i < 100; i++) {
+        assertEquals(i, heap.removeMin());
+        }
+        assertTrue(heap.isEmpty());
+    }
+    
+    @Test(timeout=SECOND)
+    public void testInsertNullEmpty() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        assertTrue(heap.isEmpty());
+        try {
+            heap.insert(null);
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException ex) {
+            // Do nothing: this is ok
+        }
+    }
+    
+    
+    @Test(timeout=SECOND)
+    public void testInsertNull() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        heap.insert(6);
+        assertTrue(!heap.isEmpty());
+        try {
+            heap.insert(null);
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException ex) {
+            // Do nothing: this is ok
+        }
+    }
+    
+    
 }
