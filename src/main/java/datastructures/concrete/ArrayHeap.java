@@ -1,7 +1,7 @@
 package datastructures.concrete;
 
+import java.util.NoSuchElementException;
 import datastructures.interfaces.IPriorityQueue;
-import misc.exceptions.NotYetImplementedException;
 
 /**
  * See IPriorityQueue for details on what each method must do.
@@ -26,7 +26,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     }
     
     public ArrayHeap(int size) {
-        this.elementSize = 0;
+        elementSize = 0;
         totalSize = size;
         heap = makeArrayOfT(size);
     }
@@ -49,29 +49,70 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
 
     @Override
     public T removeMin() {
+        if(elementSize == 0) {
+            throw new NoSuchElementException();
+        }
+        
         T minValue = heap[0];
         heap[0] = heap[elementSize - 1];
         
         percolateDown(0);
-        
+        elementSize--;
         return minValue;
     }
     
     private void percolateDown(int curIndex) {
-        for(int i = 0; i < NUM_CHILDREN; i++) {
+        int childIndex1 = 4 * curIndex + 1;
+        int childIndex2 = 4 * curIndex + 2;
+        int childIndex3 = 4 * curIndex + 3;
+        int childIndex4 = 4 * curIndex + 4;
+        
+        if(childIndex1 < elementSize && heap[childIndex1].compareTo(heap[curIndex]) < 0) {
+            T temp = heap[childIndex1];
+            heap[childIndex1] = heap[curIndex];
+            heap[curIndex] = temp;
+            percolateDown(childIndex1);
+        } else if (childIndex2 < elementSize && heap[childIndex2].compareTo(heap[curIndex]) < 0) {
+            T temp = heap[childIndex2];
+            heap[childIndex2] = heap[curIndex];
+            heap[curIndex] = temp;
+            percolateDown(childIndex2);
+        } else if (childIndex3 < elementSize && heap[childIndex3].compareTo(heap[curIndex]) < 0) {
+            T temp = heap[childIndex3];
+            heap[childIndex3] = heap[curIndex];
+            heap[curIndex] = temp;
+            percolateDown(childIndex3);
+        } else if (childIndex4 < elementSize && heap[childIndex4].compareTo(heap[curIndex]) < 0) {
+            T temp = heap[childIndex4];
+            heap[childIndex4] = heap[curIndex];
+            heap[curIndex] = temp;
+            percolateDown(childIndex4);
+        }
+        
+        /*
+        for(int i = 1; i <= NUM_CHILDREN; i++) {
             int childIndex = 4 * curIndex + i;
-            if(heap[childIndex].compareTo(heap[curIndex]) < 0) {
+            if(childIndex < elementSize && 
+                    heap[childIndex].compareTo
+                    //may need to be > 0
+                    (heap[curIndex]) > 0) {
+                
                 T temp = heap[childIndex];
                 heap[childIndex] = heap[curIndex];
                 heap[curIndex] = temp;
                 
                 percolateDown(childIndex);
+                break;
             }
-        }
+        } 
+        */
     }
 
     @Override
     public T peekMin() {
+        if(elementSize == 0) {
+            throw new NoSuchElementException();
+        }
         return heap[0];
     }
 
@@ -81,17 +122,18 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
             throw new IllegalArgumentException();
         }
         
+        elementSize++;
         if(elementSize == totalSize) {
             resize();
         }
-        
+
         heap[elementSize - 1] = item;
         percolateUp(elementSize - 1);
     }
     
     private void resize() {
         T temp[] = makeArrayOfT(totalSize * 2);
-        for(int i = 0; i < totalSize - 1; i ++) {
+        for(int i = 0; i < elementSize; i ++) {
             temp[i] = heap[i];
         }
         
@@ -100,14 +142,14 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     }
     
     private void percolateUp(int curIndex) {
-        for(int i = 0; i < NUM_CHILDREN; i++) {
-            int parentIndex = (i-1) / 4;
-            if(heap[parentIndex].compareTo(heap[curIndex]) > 0) {
-                T temp = heap[parentIndex];
-                heap[parentIndex] = heap[curIndex];
-                heap[parentIndex] = temp;
+        if(curIndex != 0) {
+                int parentIndex = (curIndex-1) / 4;
+                if(heap[parentIndex].compareTo(heap[curIndex]) > 0) {
+                    T temp = heap[parentIndex];
+                    heap[parentIndex] = heap[curIndex];
+                    heap[curIndex] = temp;
                 
-                percolateUp(parentIndex);
+                    percolateUp(parentIndex);
             }
         }
     }
