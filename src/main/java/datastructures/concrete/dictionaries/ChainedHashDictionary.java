@@ -80,8 +80,6 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
                     } else {
                         tempList[hashVal].put(pair.getKey(), pair.getValue());
                     }
-                    
-                    
                 }
             }
         }
@@ -232,8 +230,8 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
                     if (count > step) {
                         return true;
                     }
+                    }
                 }
-            }
             }
             return false;
          }

@@ -16,7 +16,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     private T[] heap;
     private int totalSize;
     private int elementSize;
-
+    
     // Feel free to add more fields and constants.
 
     public ArrayHeap() {
@@ -55,57 +55,37 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         
         T minValue = heap[0];
         heap[0] = heap[elementSize - 1];
+
+        heap[elementSize-1] = null;
         
-        percolateDown(0);
         elementSize--;
+
+        percolateDown(0);
+        
         return minValue;
     }
     
     private void percolateDown(int curIndex) {
-        int childIndex1 = 4 * curIndex + 1;
-        int childIndex2 = 4 * curIndex + 2;
-        int childIndex3 = 4 * curIndex + 3;
-        int childIndex4 = 4 * curIndex + 4;
-        
-        if(childIndex1 < elementSize && heap[childIndex1].compareTo(heap[curIndex]) < 0) {
-            T temp = heap[childIndex1];
-            heap[childIndex1] = heap[curIndex];
-            heap[curIndex] = temp;
-            percolateDown(childIndex1);
-        } else if (childIndex2 < elementSize && heap[childIndex2].compareTo(heap[curIndex]) < 0) {
-            T temp = heap[childIndex2];
-            heap[childIndex2] = heap[curIndex];
-            heap[curIndex] = temp;
-            percolateDown(childIndex2);
-        } else if (childIndex3 < elementSize && heap[childIndex3].compareTo(heap[curIndex]) < 0) {
-            T temp = heap[childIndex3];
-            heap[childIndex3] = heap[curIndex];
-            heap[curIndex] = temp;
-            percolateDown(childIndex3);
-        } else if (childIndex4 < elementSize && heap[childIndex4].compareTo(heap[curIndex]) < 0) {
-            T temp = heap[childIndex4];
-            heap[childIndex4] = heap[curIndex];
-            heap[curIndex] = temp;
-            percolateDown(childIndex4);
-        }
-        
-        /*
-        for(int i = 1; i <= NUM_CHILDREN; i++) {
+        int minChildIndex = NUM_CHILDREN * curIndex + 1;
+        for(int i = 2; i <= NUM_CHILDREN; i++) {
             int childIndex = 4 * curIndex + i;
             if(childIndex < elementSize && 
-                    heap[childIndex].compareTo
-                    //may need to be > 0
-                    (heap[curIndex]) > 0) {
-                
-                T temp = heap[childIndex];
-                heap[childIndex] = heap[curIndex];
-                heap[curIndex] = temp;
-                
-                percolateDown(childIndex);
-                break;
+                    heap[childIndex] != null && 
+                    heap[childIndex].compareTo(heap[minChildIndex]) < 0) {
+                minChildIndex = childIndex;
             }
+        }
+        
+        if (minChildIndex < elementSize && 
+                heap[minChildIndex].compareTo
+                (heap[curIndex]) < 0) {
+        
+            T temp = heap[minChildIndex];
+            heap[minChildIndex] = heap[curIndex];
+            heap[curIndex] = temp;
+        
+            percolateDown(minChildIndex);
         } 
-        */
     }
 
     @Override
@@ -128,6 +108,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         }
 
         heap[elementSize - 1] = item;
+
         percolateUp(elementSize - 1);
     }
     
@@ -157,5 +138,17 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     @Override
     public int size() {
         return elementSize;
+    }
+    
+    //TODO maybe remove
+    public void print(boolean hasPercolated) {
+        System.out.println();
+        if(!hasPercolated) System.out.println("Before Percolating");
+        else if(hasPercolated) System.out.println("After Percolating");
+        for(int i = 0; i < elementSize; i++) {
+            if(heap[i] != null) {
+                System.out.print(heap[i].toString() + " ");
+            }
+        }
     }
 }
