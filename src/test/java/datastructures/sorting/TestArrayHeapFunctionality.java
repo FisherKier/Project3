@@ -3,12 +3,16 @@ package datastructures.sorting;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.awt.List;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.NoSuchElementException;
 
-import misc.BaseTest;
+import org.junit.Test;
+
 import datastructures.concrete.ArrayHeap;
 import datastructures.interfaces.IPriorityQueue;
-import org.junit.Test;
+import misc.BaseTest;
 
 /**
  * See spec for details on what kinds of tests this class should include.
@@ -161,6 +165,19 @@ public class TestArrayHeapFunctionality extends BaseTest {
         } catch (IllegalArgumentException ex) {
             // Do nothing: this is ok
         }
+    }
+    
+    @Test(timeout=SECOND)
+    public void testSorted() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        for (int i = 5; i < 25; i++) {
+        heap.insert(((59*i) % 199));
+        }
+        for (int i = 0; i < heap.size(); i++) {
+        output.add(heap.removeMin());
+        }
+        assertTrue(heap.isEmpty());
+        assertEquals(output, Collections.sort(output));
     }
     
     
