@@ -1,7 +1,11 @@
 package misc;
 
+import java.util.Iterator;
+
+import datastructures.concrete.ArrayHeap;
+import datastructures.concrete.DoubleLinkedList;
 import datastructures.interfaces.IList;
-import misc.exceptions.NotYetImplementedException;
+import datastructures.interfaces.IPriorityQueue;
 
 public class Searcher {
     /**
@@ -30,7 +34,26 @@ public class Searcher {
         //
         // - You should implement this method by using your ArrayHeap for the sake of
         //   efficiency.
-
-        throw new NotYetImplementedException();
+        IList<T> sortedList = new DoubleLinkedList<>();
+        IPriorityQueue<T> heap = new ArrayHeap<>();
+        Iterator<T> iterator = input.iterator();
+        
+        if(k < 0) {
+            throw new IllegalArgumentException();
+        }
+        
+        //put all of input's data into the heap
+        while(iterator.hasNext()) {
+            heap.insert(iterator.next());
+        }
+        T temp;
+        for(int i = 0; i < input.size() - k; i++) {
+            temp = heap.removeMin();
+        }
+        for(int i = input.size() - k; i < input.size(); i ++) {
+            sortedList.add(heap.removeMin());
+        }
+        
+        return sortedList;
     }
 }
