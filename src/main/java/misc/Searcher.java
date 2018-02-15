@@ -42,18 +42,38 @@ public class Searcher {
             throw new IllegalArgumentException();
         }
         
-        //put all of input's data into the heap
-        while(iterator.hasNext()) {
-            heap.insert(iterator.next());
-        }
-        T temp;
-        for(int i = 0; i < input.size() - k; i++) {
-            temp = heap.removeMin();
-        }
-        for(int i = input.size() - k; i < input.size(); i ++) {
-            sortedList.add(heap.removeMin());
+        else if(k == 0) {
+            return sortedList;
         }
         
-        return sortedList;
+        else if(k >= input.size()) {
+            for(int i = 0; i < input.size(); i++) {
+                heap.insert(iterator.next());
+            }
+            for(int i = 0; i < input.size(); i++) {
+                sortedList.add(heap.removeMin());
+            }
+            return sortedList;
+        }
+        
+        else {
+            for(int i = 0; i < input.size(); i++) {
+                if(i < k) {
+                    heap.insert(iterator.next());
+                } else {
+                    T temp = iterator.next();
+                    if(heap.peekMin().compareTo(temp) < 0) {
+                        T temp2 = heap.removeMin();
+                        heap.insert(temp);
+                    }
+                }
+            }
+        
+            for(int i = 0; i < k; i ++) {
+                sortedList.add(heap.removeMin());
+            }
+        
+            return sortedList;
+        }
     }
 }
