@@ -49,7 +49,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
 
     @Override
     public T removeMin() {
-        if(elementSize == 0) {
+        if (elementSize == 0) {
             throw new NoSuchElementException();
         }
         
@@ -67,9 +67,9 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     
     private void percolateDown(int curIndex) {
         int minChildIndex = NUM_CHILDREN * curIndex + 1;
-        for(int i = 2; i <= NUM_CHILDREN; i++) {
+        for (int i = 2; i <= NUM_CHILDREN; i++) {
             int childIndex = 4 * curIndex + i;
-            if(childIndex < elementSize && 
+            if (childIndex < elementSize && 
                     heap[childIndex] != null && 
                     heap[childIndex].compareTo(heap[minChildIndex]) < 0) {
                 minChildIndex = childIndex;
@@ -77,8 +77,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         }
         
         if (minChildIndex < elementSize && 
-                heap[minChildIndex].compareTo
-                (heap[curIndex]) < 0) {
+                heap[minChildIndex].compareTo(heap[curIndex]) < 0) {
         
             T temp = heap[minChildIndex];
             heap[minChildIndex] = heap[curIndex];
@@ -90,7 +89,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
 
     @Override
     public T peekMin() {
-        if(elementSize == 0) {
+        if (elementSize == 0) {
             throw new NoSuchElementException();
         }
         return heap[0];
@@ -98,12 +97,12 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
 
     @Override
     public void insert(T item) {
-        if(item == null) {
+        if (item == null) {
             throw new IllegalArgumentException();
         }
         
         elementSize++;
-        if(elementSize == totalSize) {
+        if (elementSize == totalSize) {
             resize();
         }
 
@@ -113,8 +112,8 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     }
     
     private void resize() {
-        T temp[] = makeArrayOfT(totalSize * 2);
-        for(int i = 0; i < elementSize; i ++) {
+        T[] temp = makeArrayOfT(totalSize * 2);
+        for (int i = 0; i < elementSize; i++) {
             temp[i] = heap[i];
         }
         
@@ -123,9 +122,9 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     }
     
     private void percolateUp(int curIndex) {
-        if(curIndex != 0) {
+        if (curIndex != 0) {
                 int parentIndex = (curIndex-1) / 4;
-                if(heap[parentIndex].compareTo(heap[curIndex]) > 0) {
+                if (heap[parentIndex].compareTo(heap[curIndex]) > 0) {
                     T temp = heap[parentIndex];
                     heap[parentIndex] = heap[curIndex];
                     heap[curIndex] = temp;
@@ -138,17 +137,5 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     @Override
     public int size() {
         return elementSize;
-    }
-    
-    //TODO maybe remove
-    public void print(boolean hasPercolated) {
-        System.out.println();
-        if(!hasPercolated) System.out.println("Before Percolating");
-        else if(hasPercolated) System.out.println("After Percolating");
-        for(int i = 0; i < elementSize; i++) {
-            if(heap[i] != null) {
-                System.out.print(heap[i].toString() + " ");
-            }
-        }
     }
 }

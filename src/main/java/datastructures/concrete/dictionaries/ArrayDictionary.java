@@ -133,7 +133,7 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
     @Override
     public boolean containsKey(K key) {
         for (int i = 0; i < totalSize; i++) {
-            if(key == null) {
+            if (key == null) {
                 if (pairs[i] != null && pairs[i].key == null) {
                     return true;
                 }
@@ -189,9 +189,9 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
         }
         
         public boolean hasNext() {
-            if(pairs != null && current < pairs.length) {
-                for(int i = current + 1; i < pairs.length; i ++) {
-                    if(pairs[i] != null) {
+            if (pairs != null && current < pairs.length) {
+                for (int i = current + 1; i < pairs.length; i++) {
+                    if (pairs[i] != null) {
                         return true;
                     }
                 }
@@ -200,13 +200,13 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
         }
         
         public KVPair<K, V> next() {
-            if(!hasNext()) {
+            if (!hasNext()) {
                 throw new NoSuchElementException();
             }
 
-            current ++;
-            for(int i = current; i < pairs.length; i++) {
-                if(pairs[i] != null) {
+            current++;
+            for (int i = current; i < pairs.length; i++) {
+                if (pairs[i] != null) {
                     return new KVPair<K, V>(pairs[i].key, pairs[i].value);
                 }
             }
