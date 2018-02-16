@@ -38,42 +38,56 @@ public class Searcher {
         IPriorityQueue<T> heap = new ArrayHeap<>();
         Iterator<T> iterator = input.iterator();
         
-        if(k < 0) {
+        if (k < 0) {
             throw new IllegalArgumentException();
         }
         
-        else if(k == 0) {
+        else if (k == 0) {
             return sortedList;
         }
         
-        else if(k >= input.size()) {
-            for(int i = 0; i < input.size(); i++) {
-                heap.insert(iterator.next());
+        else if (k >= input.size()) {
+            for (int i = 0; i < input.size(); i++) {
+                T temp = iterator.next();
+                if (temp == null) {
+                throw new IllegalArgumentException();    
+                }else {
+                heap.insert(temp);
+                }
             }
-            for(int i = 0; i < input.size(); i++) {
+            for (int i = 0; i < input.size(); i++) {
                 sortedList.add(heap.removeMin());
             }
             return sortedList;
         }
-        
         else {
-            for(int i = 0; i < input.size(); i++) {
-                if(i < k) {
-                    heap.insert(iterator.next());
+            for (int i = 0; i < input.size(); i++) {
+                if (i < k) {
+                    T temp = iterator.next();
+                    if (temp == null) {
+                    throw new IllegalArgumentException();    
+                    }else {
+                    heap.insert(temp);
+                    }
                 } else {
                     T temp = iterator.next();
-                    if(heap.peekMin().compareTo(temp) < 0) {
-                        T temp2 = heap.removeMin();
+                    if (temp == null) {
+                        throw new IllegalArgumentException();    
+                        }else {
+                    if (heap.peekMin().compareTo(temp) < 0) {
+                        heap.removeMin();
                         heap.insert(temp);
+                    }
                     }
                 }
             }
         
-            for(int i = 0; i < k; i ++) {
+            for (int i = 0; i < k; i++) {
                 sortedList.add(heap.removeMin());
             }
         
             return sortedList;
         }
+        
     }
 }
