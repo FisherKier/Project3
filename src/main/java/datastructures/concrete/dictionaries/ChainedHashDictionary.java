@@ -3,7 +3,6 @@ package datastructures.concrete.dictionaries;
 import datastructures.concrete.KVPair;
 import datastructures.interfaces.IDictionary;
 import misc.exceptions.NoSuchKeyException;
-import misc.exceptions.NotYetImplementedException;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -57,7 +56,7 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
     public V get(K key) {
         int hashVal = getHashVal(key);
         
-        if(chains[hashVal] == null) {
+        if (chains[hashVal] == null) {
             throw new NoSuchKeyException();
         } else {
             return chains[hashVal].get(key);
@@ -68,13 +67,13 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
         IDictionary<K, V>[] tempList = makeArrayOfChains(totalSize * 2);
         totalSize = totalSize * 2;
         for (IDictionary<K, V> bucket : chains) {
-            if(bucket != null) {
+            if (bucket != null) {
 
-                for(KVPair<K,V> pair : bucket) {
+                for (KVPair<K, V> pair : bucket) {
                     int hashVal = getHashVal(pair.getKey());
                     
-                    if(tempList[hashVal] == null) {
-                        tempList[hashVal] = new ArrayDictionary<K,V>();
+                    if (tempList[hashVal] == null) {
+                        tempList[hashVal] = new ArrayDictionary<K, V>();
                         tempList[hashVal].put(pair.getKey(), pair.getValue());
                         chainSize++;
                     } else {
@@ -98,7 +97,7 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
         //if not create one and put the key + value in it,
         //then increase elementSize
         
-        if(chains[hashVal] == null) {
+        if (chains[hashVal] == null) {
             chains[hashVal] = new ArrayDictionary<K, V>();
             chains[hashVal].put(key, value);
             elementSize++;
@@ -109,13 +108,13 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
         else {
             //if the key isn't in the dictionary already increase element size
             
-            if(!chains[hashVal].containsKey(key)) {
+            if (!chains[hashVal].containsKey(key)) {
                 elementSize++;
             }
             chains[hashVal].put(key, value);
         }
         
-        if(((double)(chainSize + 1)) / ((double)(totalSize + 1)) > loadFactor) {
+        if (((double) (chainSize + 1)) / ((double) (totalSize + 1)) > loadFactor) {
             resize();
         }
     }
@@ -124,7 +123,7 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
     public V remove(K key) {
         int hashVal = getHashVal(key);
         
-        if(chains[hashVal] == null) {
+        if (chains[hashVal] == null) {
             throw new NoSuchKeyException();
         }
         elementSize--;
@@ -135,7 +134,7 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
     public boolean containsKey(K key) {
         int hashVal = getHashVal(key);
         
-        if(chains[hashVal] == null) {
+        if (chains[hashVal] == null) {
             return false;
         } else {
             return chains[hashVal].containsKey(key);
@@ -149,9 +148,9 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
     
     //returns the index in the chains array for the given key
     public int getHashVal(K key) {
-        if(key == null) {
+        if (key == null) {
             return 0;
-        } else if(key.hashCode() < 0) {
+        } else if (key.hashCode() < 0) {
             return key.hashCode() % totalSize * -1;
         } else {
             return key.hashCode() % totalSize;
@@ -222,9 +221,9 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
         public boolean hasNext() {
             int count = 0;
             for (IDictionary<K, V> bucket : this.chains) {
-                if(bucket != null) {
+                if (bucket != null) {
                 Iterator<KVPair<K, V>> bucketIterator = bucket.iterator();
-                while(bucketIterator.hasNext()) {
+                while (bucketIterator.hasNext()) {
                     count++;
                     bucketIterator.next();
                     if (count > step) {
@@ -242,9 +241,9 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
         public KVPair<K, V> next() {
             int count = 0;
             for (IDictionary<K, V> bucket : this.chains) {
-                if(bucket != null) {
+                if (bucket != null) {
                 Iterator<KVPair<K, V>> bucketIterator = bucket.iterator();
-                while(bucketIterator.hasNext()) {
+                while (bucketIterator.hasNext()) {
                     count++;
                     KVPair<K, V> temp = bucketIterator.next();
                     if (count > step) {

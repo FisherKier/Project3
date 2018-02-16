@@ -7,8 +7,6 @@ import java.util.NoSuchElementException;
 
 import misc.BaseTest;
 import datastructures.concrete.ArrayHeap;
-import datastructures.concrete.DoubleLinkedList;
-import datastructures.interfaces.IList;
 import datastructures.interfaces.IPriorityQueue;
 import org.junit.Test;
 
@@ -114,7 +112,7 @@ public class TestArrayHeapFunctionality extends BaseTest {
     }
     
     @Test(timeout=SECOND)
-    public void testSortBackWardsInsert() {
+    public void testSortBackwardsInsert() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         for (int i = 19; i >= 0; i--) {
             heap.insert(i);
@@ -142,7 +140,7 @@ public class TestArrayHeapFunctionality extends BaseTest {
     }
     
     @Test(timeout=SECOND)
-    public void testResizeBackWardsInsert() {
+    public void testResizeBackwardsInsert() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         for (int i = 99; i >= 0; i--) {
             heap.insert(i);
@@ -185,7 +183,7 @@ public class TestArrayHeapFunctionality extends BaseTest {
     public void testBasicInsert() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         IPriorityQueue<String> heap2 = new ArrayHeap<>();
-        for(int i =  0; i < 100; i++) {
+        for (int i =  0; i < 100; i++) {
             heap.insert(i);
             assertEquals(0, heap.peekMin());
         }
@@ -207,13 +205,13 @@ public class TestArrayHeapFunctionality extends BaseTest {
     public void testBasicRemove() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         IPriorityQueue<String> heap2 = makeBasicHeap();
-        for(int i =  0; i < 10; i++) {
+        for (int i =  0; i < 10; i++) {
             heap.insert(i);
             assertEquals(i + 1, heap.size());
         }
         
         int temp;
-        for(int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             temp=heap.removeMin();
             assertEquals(i, temp);
             assertEquals(9 - i, heap.size());
