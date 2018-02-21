@@ -46,24 +46,28 @@ public class TestArrayHeapFunctionality extends BaseTest {
     public void testRemoveFromEmpty() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         assertTrue(heap.isEmpty());
+
         try {
             heap.removeMin();
             fail("Expected NoSuchElementException");
         } catch (NoSuchElementException ex) {
             // Do nothing: this is ok
         }
+
     }
     
     @Test(timeout=SECOND)
     public void testPeakFromEmpty() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         assertTrue(heap.isEmpty());
+
         try {
             heap.peekMin();
             fail("Expected NoSuchElementException");
         } catch (NoSuchElementException ex) {
             // Do nothing: this is ok
         }
+
     }
     
     @Test(timeout=SECOND)
@@ -90,11 +94,13 @@ public class TestArrayHeapFunctionality extends BaseTest {
     @Test(timeout=SECOND)
     public void testAddandRemoveMany() {
         IPriorityQueue<Integer> heap = this.makeInstance();
+
         for (int i = 0; i < 100; i++) {
             heap.insert(i);
             assertEquals(1, heap.size());
             assertEquals(i, heap.removeMin());
             assertTrue(heap.isEmpty());
+
         }
     }
     
@@ -102,11 +108,13 @@ public class TestArrayHeapFunctionality extends BaseTest {
     public void testSortForwardInsert() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         for (int i = 0; i < 20; i++) {
+
             heap.insert(i);
         }
         assertEquals(20, heap.size());
         for (int i = 0; i < 20; i++) {
             assertEquals(i, heap.removeMin());
+
         }
         assertTrue(heap.isEmpty());
     }
@@ -115,12 +123,14 @@ public class TestArrayHeapFunctionality extends BaseTest {
     public void testSortBackWardsInsert() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         for (int i = 19; i >= 0; i--) {
+
             heap.insert(i);
             assertEquals(i, heap.peekMin());
         }
         assertEquals(20, heap.size());
         for (int i = 0; i < 20; i++) {
             assertEquals(i, heap.removeMin());
+
         }
         assertTrue(heap.isEmpty());
     }
@@ -130,11 +140,13 @@ public class TestArrayHeapFunctionality extends BaseTest {
     public void testResizeForwardInsert() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         for (int i = 0; i < 100; i++) {
+
             heap.insert(i);
         }
         assertEquals(100, heap.size());
         for (int i = 0; i < 100; i++) {
             assertEquals(i, heap.removeMin());
+
         }
         assertTrue(heap.isEmpty());
     }
@@ -143,11 +155,13 @@ public class TestArrayHeapFunctionality extends BaseTest {
     public void testResizeBackWardsInsert() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         for (int i = 99; i >= 0; i--) {
+
             heap.insert(i);
         }
         assertEquals(100, heap.size());
         for (int i = 0; i < 100; i++) {
             assertEquals(i, heap.removeMin());
+
         }
         assertTrue(heap.isEmpty());
     }
@@ -178,6 +192,7 @@ public class TestArrayHeapFunctionality extends BaseTest {
         }
     }
     
+
 
     @Test(timeout=SECOND)
     public void testBasicInsert() {
@@ -231,3 +246,4 @@ public class TestArrayHeapFunctionality extends BaseTest {
     }
     
 }
+
