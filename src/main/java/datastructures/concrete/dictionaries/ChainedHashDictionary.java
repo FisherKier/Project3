@@ -3,6 +3,7 @@ package datastructures.concrete.dictionaries;
 import datastructures.concrete.KVPair;
 import datastructures.interfaces.IDictionary;
 import misc.exceptions.NoSuchKeyException;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -78,8 +79,7 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
                     } else {
                         tempList[hashVal].put(pair.getKey(), pair.getValue());
                     }
-                    
-                    
+
                 }
             }
         }
@@ -214,14 +214,21 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
         private IDictionary<K, V>[] chains;
         private int step = 0;
 
+        private int index = 0;
+        private int limit;
+        
         public ChainedIterator(IDictionary<K, V>[] chains) {
             this.chains = chains;
+            this.limit = chains.length;
         }
 
         @Override
         public boolean hasNext() {
             int count = 0;
-            for (IDictionary<K, V> bucket : this.chains) {
+
+            for (int i = index; i < limit; i++) {
+                IDictionary<K, V> bucket = chains[i];
+
                 if (bucket != null) {
                 Iterator<KVPair<K, V>> bucketIterator = bucket.iterator();
                 while (bucketIterator.hasNext()) {
@@ -230,8 +237,13 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
                     if (count > step) {
                         return true;
                     }
+
+                    }           
                 }
-            }
+                step = 0;
+                count = 0;
+                index++;
+
             }
             return false;
          }
@@ -241,7 +253,10 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
         @Override
         public KVPair<K, V> next() {
             int count = 0;
-            for (IDictionary<K, V> bucket : this.chains) {
+
+            for (int i = index; i < limit; i++) {
+                IDictionary<K, V> bucket = chains[i];
+
                 if (bucket != null) {
                 Iterator<KVPair<K, V>> bucketIterator = bucket.iterator();
                 while (bucketIterator.hasNext()) {
@@ -250,9 +265,14 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
                     if (count > step) {
                         step++;
                         return temp;
-                    }
+
+                    } 
                 }
             }
+                step = 0;
+                count = 0;
+                index++;
+
             }
             throw new NoSuchElementException();    
         }
