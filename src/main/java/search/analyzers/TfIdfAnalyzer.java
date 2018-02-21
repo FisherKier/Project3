@@ -26,10 +26,11 @@ public class TfIdfAnalyzer {
     //
     // We will use each webpage's page URI as a unique key.
     private IDictionary<URI, IDictionary<String, Double>> documentTfIdfVectors;
-
+    
+    
     // Feel free to add extra fields and helper methods.
     
-    private IDictionary<URI, IDictionary<String, Double>> documentTfVectors;
+    
 
     public TfIdfAnalyzer(ISet<Webpage> webpages) {
         // Implementation note: We have commented these method calls out so your
@@ -38,9 +39,9 @@ public class TfIdfAnalyzer {
         //
         // You should uncomment these lines when you're ready to begin working
         // on this class.
-        this.documentTfVectors = this.computeAllDocumentTfVectors(webpages);
-        this.idfScores = this.computeIdfScores(webpages);
-        this.documentTfIdfVectors = this.computeAllDocumentTfIdfVectors(webpages);
+        this.idfScores = new ChainedHashDictionary<String, Double>();
+        this.documentTfIdfVectors = new ChainedHashDictionary<URI, IDictionary<String, Double>>();
+        computeAllScores(webpages);
     }
 
     // Note: this method, strictly speaking, doesn't need to exist. However,
@@ -60,11 +61,15 @@ public class TfIdfAnalyzer {
      * Return a dictionary mapping every single unique word found
      * in every single document to their IDF score.
      */
+    /*
     private IDictionary<String, Double> computeIdfScores(ISet<Webpage> pages) {
+        //Should not run, calculated when finding TF scores
+        System.out.println("Starting IDF");
         IDictionary<String, Integer> totalOccurrence = new ChainedHashDictionary<String, Integer>();
         int totalPages = 0;
         for (Webpage page : pages) {
             totalPages++;
+            System.out.println("Running IDF doc count, Page " + totalPages);
             for (KVPair<String, Double> pair : documentTfVectors.get(page.getUri())) {
                 if (!totalOccurrence.containsKey(pair.getKey())) {
                     totalOccurrence.put(pair.getKey(), 1);
@@ -73,19 +78,16 @@ public class TfIdfAnalyzer {
                 }
             }
             }
-        System.out.println("Total Pages = " + totalPages);
+        
+        System.out.println("Calculating IDF");
         IDictionary<String, Double> IdfScores = new ChainedHashDictionary<String, Double>();
         for (KVPair<String, Integer> pair : totalOccurrence) {
             IdfScores.put(pair.getKey(), (Math.log( (double)totalPages / (double)pair.getValue() ) ) );
-            System.out.println("'" + pair.getKey() + "' has count " + pair.getValue());
-            System.out.println("'" + pair.getKey() + "' has multiplier " + ((double)totalPages)/(double)pair.getValue());
-            System.out.println("'" + pair.getKey() + "' has value " + IdfScores.get(pair.getKey()));
-            
             }
         return IdfScores;
         }
     
-    
+   */
 
     /**
      * Returns a dictionary mapping every unique word found in the given list
@@ -93,6 +95,7 @@ public class TfIdfAnalyzer {
      *
      * The input list represents the words contained within a single document.
      */
+    //for calculating Tf of query
     private IDictionary<String, Double> computeTfScores(IList<String> words) {
          IDictionary<String, Integer> wordCount = new ChainedHashDictionary<String, Integer>();
          int totalWords = 0;
@@ -110,6 +113,73 @@ public class TfIdfAnalyzer {
             }
         return TfScores;
     }
+    
+    //used to calculate all scores on a single iteration
+    private void computeAllScores(ISet<Webpage> pages) {
+        //totalWordCount counts total words on each page
+        //wordsCountPage counts number of each word on each page
+        //wordOnPageCount counts how many times a word show up on a page
+        Integer pageCount = 0;
+        IDictionary<URI, IDictionary<String, Integer>> wordsCountPage = new ChainedHashDictionary<URI, IDictionary<String, Integer>>();
+        IDictionary<URI, Integer> totalWordCount = new ChainedHashDictionary<URI, Integer>();
+        IDictionary<String, Integer> wordOnPageCount = new ChainedHashDictionary<String, Integer>();
+        
+        for (Webpage page : pages) {
+        pageCount++;  
+        IList<String> words = page.getWords();
+        IDictionary<String, Integer> wordCount = new ChainedHashDictionary<String, Integer>();
+        int totalWords = 0;
+        for (String word : words) {
+            totalWords++;
+            if (wordCount.containsKey(word)) {
+                wordCount.put(word, (wordCount.get(word) + 1));
+            }else {
+                wordCount.put(word, 1);
+                if (!wordOnPageCount.containsKey(word)) {
+                    wordOnPageCount.put(word, 1);
+                }else {
+                    wordOnPageCount.put(word, (wordOnPageCount.get(word) + 1) );
+                } 
+            }
+            
+        }
+        totalWordCount.put(page.getUri(), totalWords);
+        wordsCountPage.put(page.getUri(), wordCount);
+        }
+        //documentTfIdfVectors
+        //idfScores
+        for (Webpage pageCalculation : pages) {
+            
+            IDictionary<String, Double> tfIdfScore = new ChainedHashDictionary<String, Double>();
+            for (KVPair<String, Integer> pair : wordsCountPage.get(pageCalculation.getUri())) {
+                double tfScore = (double)pair.getValue() / (double)totalWordCount.get(pageCalculation.getUri());
+                if (idfScores.containsKey(pair.getKey())) {
+                   //standard tf-idf calculation 
+                    tfIdfScore.put(pair.getKey(), idfScores.get(pair.getKey()) * tfScore);
+                }else {
+                   //caclulate idf value then do the calculation
+                    double idfScore = Math.log( (double)pageCount /  wordOnPageCount.get(pair.getKey())) ;
+                    idfScores.put(pair.getKey(), idfScore);
+                    tfIdfScore.put(pair.getKey(), idfScore * tfScore);
+                }
+                
+                
+            }
+            documentTfIdfVectors.put(pageCalculation.getUri(), tfIdfScore);
+        }
+       
+        
+        }
+        
+        //need to go through tf scores convert to double and convert idf scores if they exist
+        
+        //will change do all calulations after idf is calculated
+       // IDictionary<String, Double> TfScores = new ChainedHashDictionary<String, Double>();
+       //for (KVPair<String, Integer> pair : wordCount) {
+        //   TfScores.put(pair.getKey(), ((double)pair.getValue()/(double)totalWords));
+        //   }
+       //return TfScores;
+   
 
     /**
      * See spec for more details on what this method should do.
@@ -119,15 +189,18 @@ public class TfIdfAnalyzer {
         // call the computeTfScores(...) method.
         IDictionary<URI, IDictionary<String, Double>> allTf = new ChainedHashDictionary<URI, IDictionary<String, Double>>();
         for (Webpage page : pages) {
+            System.out.println("Calculating TF");
             IDictionary<String, Double> TfScore = computeTfScores(page.getWords());
             allTf.put(page.getUri(), TfScore);
         }
         return allTf;
     }
     
+    /*
     private IDictionary<URI, IDictionary<String, Double>> computeAllDocumentTfIdfVectors(ISet<Webpage> pages) {
         // Hint: this method should use the idfScores field and
         // call the computeTfScores(...) method.
+        //no longer call this method
         IDictionary<URI, IDictionary<String, Double>> allTfIdf = new ChainedHashDictionary<URI, IDictionary<String, Double>>();
         for (Webpage page : pages) {
             IDictionary<String, Double> TfIdfScore = new ChainedHashDictionary<String, Double>();
@@ -139,7 +212,7 @@ public class TfIdfAnalyzer {
         }
         return allTfIdf;
     }
-
+    */
     /**
      * Returns the cosine similarity between the TF-IDF vector for the given query and the
      * URI's document.
@@ -166,17 +239,18 @@ public class TfIdfAnalyzer {
             }else {
                 queryVector.put(pair.getKey(), 0.0);
             }
-        }
-        for (String word : query) {
             Double docWordScore;
-            if (documentVector.containsKey(word)) {
-                docWordScore = documentVector.get(word);
+            if (documentVector.containsKey(pair.getKey())) {
+                docWordScore = documentVector.get(pair.getKey());
             }else {
                 docWordScore = 0.0;
             }
-            Double queryWordScore = queryVector.get(word);
+            Double queryWordScore = queryVector.get(pair.getKey());
             numerator += docWordScore * queryWordScore;
+            
         }
+       
+        
         Double denominator = norm(documentVector) * norm(queryVector);
         if (denominator != 0) {
             return numerator/denominator;
