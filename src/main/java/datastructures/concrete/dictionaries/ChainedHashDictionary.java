@@ -66,6 +66,7 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
     private void resize() {
         IDictionary<K, V>[] tempList = makeArrayOfChains(totalSize * 2);
         totalSize = totalSize * 2;
+        chainSize = 0;
         for (IDictionary<K, V> bucket : chains) {
             if (bucket != null) {
 
