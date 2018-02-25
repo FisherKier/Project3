@@ -5,7 +5,6 @@ import datastructures.concrete.dictionaries.ChainedHashDictionary;
 import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.IList;
 import datastructures.interfaces.ISet;
-import misc.exceptions.NotYetImplementedException;
 import search.models.Webpage;
 
 import java.net.URI;
@@ -107,11 +106,11 @@ public class TfIdfAnalyzer {
                  wordCount.put(word, 1);
              }
          }
-         IDictionary<String, Double> TfScores = new ChainedHashDictionary<String, Double>();
+         IDictionary<String, Double> tfScores = new ChainedHashDictionary<String, Double>();
         for (KVPair<String, Integer> pair : wordCount) {
-            TfScores.put(pair.getKey(), ((double)pair.getValue()/(double)totalWords));
+            tfScores.put(pair.getKey(), ((double) pair.getValue()/(double) totalWords));
             }
-        return TfScores;
+        return tfScores;
     }
     
     //used to calculate all scores on a single iteration
@@ -120,7 +119,8 @@ public class TfIdfAnalyzer {
         //wordsCountPage counts number of each word on each page
         //wordOnPageCount counts how many times a word show up on a page
         Integer pageCount = 0;
-        IDictionary<URI, IDictionary<String, Integer>> wordsCountPage = new ChainedHashDictionary<URI, IDictionary<String, Integer>>();
+        IDictionary<URI, IDictionary<String, Integer>> wordsCountPage = new ChainedHashDictionary
+                <URI, IDictionary<String, Integer>>();
         IDictionary<URI, Integer> totalWordCount = new ChainedHashDictionary<URI, Integer>();
         IDictionary<String, Integer> wordOnPageCount = new ChainedHashDictionary<String, Integer>();
         
@@ -138,7 +138,7 @@ public class TfIdfAnalyzer {
                 if (!wordOnPageCount.containsKey(word)) {
                     wordOnPageCount.put(word, 1);
                 }else {
-                    wordOnPageCount.put(word, (wordOnPageCount.get(word) + 1) );
+                    wordOnPageCount.put(word, (wordOnPageCount.get(word) + 1));
                 } 
             }
             
@@ -152,13 +152,13 @@ public class TfIdfAnalyzer {
             
             IDictionary<String, Double> tfIdfScore = new ChainedHashDictionary<String, Double>();
             for (KVPair<String, Integer> pair : wordsCountPage.get(pageCalculation.getUri())) {
-                double tfScore = (double)pair.getValue() / (double)totalWordCount.get(pageCalculation.getUri());
+                double tfScore = (double) pair.getValue() / (double) totalWordCount.get(pageCalculation.getUri());
                 if (idfScores.containsKey(pair.getKey())) {
-                   //standard tf-idf calculation 
+                    //standard tf-idf calculation 
                     tfIdfScore.put(pair.getKey(), idfScores.get(pair.getKey()) * tfScore);
                 }else {
-                   //caclulate idf value then do the calculation
-                    double idfScore = Math.log( (double)pageCount /  wordOnPageCount.get(pair.getKey())) ;
+                    //caclulate idf value then do the calculation
+                    double idfScore = Math.log((double) pageCount /  wordOnPageCount.get(pair.getKey()));
                     idfScores.put(pair.getKey(), idfScore);
                     tfIdfScore.put(pair.getKey(), idfScore * tfScore);
                 }
@@ -171,14 +171,13 @@ public class TfIdfAnalyzer {
         
         }
         
-        //need to go through tf scores convert to double and convert idf scores if they exist
-        
-        //will change do all calulations after idf is calculated
-       // IDictionary<String, Double> TfScores = new ChainedHashDictionary<String, Double>();
-       //for (KVPair<String, Integer> pair : wordCount) {
-        //   TfScores.put(pair.getKey(), ((double)pair.getValue()/(double)totalWords));
-        //   }
-       //return TfScores;
+    //need to go through tf scores convert to double and convert idf scores if they exist
+    //will change do all calulations after idf is calculated
+    // IDictionary<String, Double> tfScores = new ChainedHashDictionary<String, Double>();
+    //for (KVPair<String, Integer> pair : wordCount) {
+    //tfScores.put(pair.getKey(), ((double)pair.getValue()/(double)totalWords));
+    //}
+    //return tfScores;
    
 
     /**
@@ -187,11 +186,12 @@ public class TfIdfAnalyzer {
     private IDictionary<URI, IDictionary<String, Double>> computeAllDocumentTfVectors(ISet<Webpage> pages) {
         // Hint: this method should use the idfScores field and
         // call the computeTfScores(...) method.
-        IDictionary<URI, IDictionary<String, Double>> allTf = new ChainedHashDictionary<URI, IDictionary<String, Double>>();
+        IDictionary<URI, IDictionary<String, Double>> allTf = new ChainedHashDictionary
+                <URI, IDictionary<String, Double>>();
         for (Webpage page : pages) {
             System.out.println("Calculating TF");
-            IDictionary<String, Double> TfScore = computeTfScores(page.getWords());
-            allTf.put(page.getUri(), TfScore);
+            IDictionary<String, Double> tfScore = computeTfScores(page.getWords());
+            allTf.put(page.getUri(), tfScore);
         }
         return allTf;
     }
@@ -201,12 +201,13 @@ public class TfIdfAnalyzer {
         // Hint: this method should use the idfScores field and
         // call the computeTfScores(...) method.
         //no longer call this method
-        IDictionary<URI, IDictionary<String, Double>> allTfIdf = new ChainedHashDictionary<URI, IDictionary<String, Double>>();
+        IDictionary<URI, IDictionary<String, Double>> allTfIdf = new ChainedHashDictionary
+        <URI, IDictionary<String, Double>>();
         for (Webpage page : pages) {
             IDictionary<String, Double> TfIdfScore = new ChainedHashDictionary<String, Double>();
             for (KVPair<String, Double> pair : documentTfVectors.get(page.getUri())) {
-                Double TfIdf = pair.getValue() * idfScores.get(pair.getKey());
-                TfIdfScore.put(pair.getKey(), TfIdf);
+                Double tfIdf = pair.getValue() * idfScores.get(pair.getKey());
+                TfIdfScore.put(pair.getKey(), tfIdf);
             }
             allTfIdf.put(page.getUri(), TfIdfScore);
         }
@@ -233,9 +234,9 @@ public class TfIdfAnalyzer {
         IDictionary<String, Double> queryTf = computeTfScores(query);
         Double numerator = 0.0;
         for (KVPair<String, Double> pair : queryTf) {
-            if(idfScores.containsKey(pair.getKey())) {
-                Double TfIdf = pair.getValue() * idfScores.get(pair.getKey());
-                queryVector.put(pair.getKey(), TfIdf);  
+            if (idfScores.containsKey(pair.getKey())) {
+                Double tfIdf = pair.getValue() * idfScores.get(pair.getKey());
+                queryVector.put(pair.getKey(), tfIdf);  
             }else {
                 queryVector.put(pair.getKey(), 0.0);
             }

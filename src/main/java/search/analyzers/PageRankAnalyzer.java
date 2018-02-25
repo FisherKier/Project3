@@ -4,9 +4,7 @@ import datastructures.concrete.ChainedHashSet;
 import datastructures.concrete.KVPair;
 import datastructures.concrete.dictionaries.ChainedHashDictionary;
 import datastructures.interfaces.IDictionary;
-import datastructures.interfaces.IList;
 import datastructures.interfaces.ISet;
-import misc.exceptions.NotYetImplementedException;
 import search.models.Webpage;
 
 import java.net.URI;
@@ -106,7 +104,7 @@ public class PageRankAnalyzer {
                                                    double epsilon) {
         // Step 1: The initialize step should go here
         IDictionary<URI, Double> oldRanks = new ChainedHashDictionary<URI, Double>();
-        double iValue = 1.0 / (double)graph.size();
+        double iValue = 1.0 / (double) graph.size();
         for (KVPair<URI, ISet<URI>> pair : graph) {
             oldRanks.put(pair.getKey(), iValue);
         }
@@ -117,19 +115,19 @@ public class PageRankAnalyzer {
                 newRanks.put(pair.getKey(), 0.0);
             }
             for (KVPair<URI, ISet<URI>> pair : graph) {
-                if(!pair.getValue().isEmpty()) {
-                double sValue = decay*(oldRanks.get(pair.getKey())/(double)pair.getValue().size());
-                for(URI pagelinked : pair.getValue()) {
+                if (!pair.getValue().isEmpty()) {
+                double sValue = decay*(oldRanks.get(pair.getKey())/(double) pair.getValue().size());
+                for (URI pagelinked : pair.getValue()) {
                     newRanks.put(pagelinked, newRanks.get(pagelinked)+sValue);
                 }    
                 }else {
-                    double sValue = decay*(oldRanks.get(pair.getKey())/(double)graph.size());
+                    double sValue = decay*(oldRanks.get(pair.getKey())/(double) graph.size());
                     for (KVPair<URI, ISet<URI>> pair2 : graph) {
                         newRanks.put(pair2.getKey(), newRanks.get(pair2.getKey()) + sValue);
                     }       
                 } 
             }
-            double dValue = (1.0 - decay)/(double)graph.size();
+            double dValue = (1.0 - decay)/(double) graph.size();
             for (KVPair<URI, ISet<URI>> pair2 : graph) {
                 newRanks.put(pair2.getKey(), newRanks.get(pair2.getKey()) + dValue);
             }

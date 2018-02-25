@@ -79,7 +79,7 @@ public class TestPageRankAnalyzer extends BaseTest {
         ISet<Webpage> pages = new ChainedHashSet<>();
         pages.add(this.buildPage(pageAUri, new URI[] {pageBUri, pageDUri}));
         pages.add(this.buildPage(pageBUri, new URI[] {pageCUri, pageDUri}));
-        pages.add(this.buildPage(pageCUri, new URI[] {}));
+        pages.add(this.buildPage(pageCUri, new URI[] {pageCUri}));
         pages.add(this.buildPage(pageDUri, new URI[] {pageAUri}));
         pages.add(this.buildPage(pageEUri, new URI[] {pageDUri}));
 
